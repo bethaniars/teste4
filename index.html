@@ -1,0 +1,364 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Qual é a sua cerveja? – Seletor de Produtos</title>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --cta-red:#f21414;
+      --accent:#382290;
+      --bg:#ffffff;
+      --text:#111827;
+      --muted:#6b7280;
+      --border:#e5e7eb;
+      --shadow:0 6px 18px rgba(0,0,0,.06);
+      --radius:12px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:'Open Sans', system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;font-size:15px;line-height:1.5;color:var(--text);background:var(--bg)}
+    .wrap{max-width:1100px;margin:auto;padding:22px}
+    header{display:flex;align-items:flex-start;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+    .title{font-weight:800;font-size:clamp(22px,3.2vw,28px)}
+    .subtitle{color:var(--muted);font-size:13px}
+    .wizard{margin-top:8px}
+    .steps{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+    .step{padding:4px 8px;border:1px solid var(--border);border-radius:999px;font-size:11px;color:var(--muted);background:#fff}
+    .step.is-active{border-color:var(--cta-red);color:var(--cta-red);font-weight:700;background:#fff5f5}
+    .step.done{border-color:#22c55e;color:#16a34a;background:#ecfdf5}
+    .progress{position:relative;height:8px;background:#f3f4f6;border-radius:999px;overflow:hidden}
+    .progress .bar{height:100%;width:25%;background:var(--cta-red);transition:width .25s ease}
+    .progress-label{margin-top:6px;font-size:12px;color:var(--muted)}
+    .panel{margin-top:12px;background:#fff;border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .panel .head{padding:14px 14px 0}
+    .panel h3{margin:0 0 4px;font-size:clamp(16px,2.1vw,19px);font-weight:800}
+    .panel .sub{margin:0;color:var(--muted);font-size:12px}
+    .grid{display:grid;gap:10px;padding:14px}
+    .grid.cols-2{grid-template-columns:repeat(2, minmax(0,1fr))}
+    .grid.cols-3{grid-template-columns:repeat(3, minmax(0,1fr))}
+    .grid.cols-4{grid-template-columns:repeat(4, minmax(0,1fr))}
+    @media (max-width:900px){.grid.cols-4,.grid.cols-3{grid-template-columns:repeat(2, minmax(0,1fr))}}
+    @media (max-width:560px){.grid.cols-4,.grid.cols-3,.grid.cols-2{grid-template-columns:repeat(1, minmax(0,1fr))}}
+    .option{position:relative;border:1px solid var(--border);background:#fff;border-radius:10px;padding:12px;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,border-color .12s ease}
+    .option::after{content:"";position:absolute;right:10px;top:10px;width:16px;height:16px;border-radius:50%;border:2px solid #d1d5db;transition:.15s;}
+    .option:hover{transform:translateY(-1px);box-shadow:0 2px 10px rgba(0,0,0,.06)}
+    .option input{position:absolute;inset:0;opacity:0}
+    .option .name{font-weight:700;font-size:14px}
+    .option .hint{color:var(--muted);font-size:11px;margin-top:3px}
+    .option:has(input:checked){border-color:var(--cta-red);box-shadow:0 0 0 3px rgba(242,20,20,.12)}
+    .option:has(input:checked)::after{background:var(--cta-red);border-color:var(--cta-red);box-shadow:0 0 0 4px rgba(242,20,20,.12)}
+    .toolbar{display:flex;gap:8px;justify-content:space-between;align-items:center;padding:10px 14px;border-top:1px solid var(--border)}
+    .btn{appearance:none;border:0;border-radius:8px;padding:10px 14px;font-weight:700;cursor:pointer;font-size:14px}
+    .btn-primary{background:var(--cta-red);color:#fff}
+    .btn-ghost{background:transparent;border:1px solid var(--border);color:#374151}
+    .muted{color:var(--muted)}
+    .product{display:flex;gap:14px;border:1px solid var(--border);background:#fff;border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+    .product .pic{width:110px;min-width:110px;background:#f7f8fa;display:grid;place-items:center}
+    .product img{width:92px;height:92px;object-fit:contain}
+    .product .info{flex:1;padding:12px}
+    .product .brand{color:var(--muted);font-size:11px;letter-spacing:.3px;text-transform:uppercase}
+    .product .name{font-weight:800;font-size:17px}
+    .product .tags{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0}
+    .tag{font-size:10.5px;padding:3px 8px;border-radius:999px;border:1px solid var(--border);color:#374151;background:#f9fafb}
+    .price{display:flex;align-items:center;gap:10px;margin-top:4px}
+    .price .old{color:#9ca3af;text-decoration:line-through;font-size:13px}
+    .price .now{font-weight:800;font-size:18px;color:#111}
+    .cta-area{display:flex;align-items:center;gap:10px;margin-top:8px;flex-wrap:wrap}
+    .highlight{border:2px solid var(--cta-red)}
+    .toast{position:fixed;inset:auto 16px 16px auto;background:#111827;color:#fff;padding:10px 14px;border-radius:8px;opacity:0;transform:translateY(10px);transition:.25s}
+    .toast.show{opacity:1;transform:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <div class="title">Qual é a sua cerveja?</div>
+        <div class="subtitle">Selecione as opções (4 passos)</div>
+      </div>
+    </header>
+
+    <section class="wizard">
+      <div class="steps" id="steps"></div>
+      <div class="progress" aria-hidden="true">
+        <div class="bar" id="progressBar"></div>
+      </div>
+      <div class="progress-label" id="progressLabel">Passo 1 de 4</div>
+
+      <!-- Passo 1 -->
+      <div class="panel" data-step="1">
+        <div class="head">
+          <h3>Qual o tipo de cerveja que mais combina com você?</h3>
+          <p class="sub">vamos começar pelo básico</p>
+        </div>
+        <div class="grid cols-3" id="step1"></div>
+        <div class="toolbar">
+          <span class="muted">1/4</span>
+          <div>
+            <button class="btn btn-ghost" data-prev disabled>voltar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 2 -->
+      <div class="panel" data-step="2" hidden>
+        <div class="head">
+          <h3>com o que você gosta de harmonizar sua cerveja?</h3>
+          <p class="sub">tudo fica melhor acompanhado</p>
+        </div>
+        <div class="grid cols-3" id="step2"></div>
+        <div class="toolbar">
+          <span class="muted">2/4</span>
+          <div>
+            <button class="btn btn-ghost" data-prev>voltar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 3 -->
+      <div class="panel" data-step="3" hidden>
+        <div class="head">
+          <h3>onde é o seu lugar favorito pra brindar?</h3>
+          <p class="sub">um brinde fica melhor no lugar certo</p>
+        </div>
+        <div class="grid cols-3" id="step3"></div>
+        <div class="toolbar">
+          <span class="muted">3/4</span>
+          <div>
+            <button class="btn btn-ghost" data-prev>voltar</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Passo 4 -->
+      <div class="panel" data-step="4" hidden>
+        <div class="head">
+          <h3>qual o tamanho certo da sua sede hoje?</h3>
+          <p class="sub">a sede pede a medida certa</p>
+        </div>
+        <div class="grid cols-3" id="step4"></div>
+        <div class="toolbar">
+          <span class="muted">4/4</span>
+          <div>
+            <button class="btn btn-ghost" data-prev>voltar</button>
+            <button class="btn btn-primary" id="btn-ver-result">ver resultado</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resultado -->
+      <div class="panel" id="result" hidden>
+        <div class="head"><h3>essa é a sua combinação perfeita 🍻</h3></div>
+        <div class="grid cols-2" id="recommendation"></div>
+        <div class="head"><h3 class="muted" style="margin-top:6px">você também pode gostar</h3></div>
+        <div class="grid cols-3" id="more"></div>
+        <div class="toolbar">
+          <span class="muted">fim</span>
+          <div>
+            <button class="btn btn-ghost" id="back-to-filters">voltar aos filtros</button>
+            <button class="btn btn-primary" id="restart">refazer seleção</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast">Produto adicionado ao carrinho</div>
+
+  <script>
+    const TYPE_OPTIONS = ["Pilsen","Trigo","Frutada / Especiarias","Amarga","Escura"];
+    const HARM_OPTIONS = ["Carne Vermelha","Carne Branca","Frutos do Mar","Salada","Comida de Boteco","Todos"];
+    const OCASION_OPTIONS = ["Praia","Campo","Churrasco","Com amigos","Com mozão","Todos"];
+    const SIZE_OPTIONS = ["Lata 269ML","Lata 350ML","Long Neck 355ML","Garrafa 600ML","Lata 473ML"];
+
+    const products = [
+      P("Baden Baden Cristal","Baden Baden",{types:["Pilsen"], harmoniza:["Carne Vermelha","Carne Branca","Frutos do Mar","Salada"], ocasiao:["Praia","Campo","Churrasco","Com amigos"], sizes:["Lata 350ML","Garrafa 600ML","Lata 473ML"]}, 15.90, 12.90),
+      P("Eisenbahn Pilsen","Eisenbahn",{types:["Pilsen"], harmoniza:["Carne Vermelha","Carne Branca","Frutos do Mar","Salada"], ocasiao:["Praia","Churrasco","Com amigos"], sizes:["Lata 269ML","Long Neck 355ML"]}, 8.59, 6.99),
+      P("Eisenbahn Unfiltered","Eisenbahn",{types:["Pilsen"], harmoniza:["Carne Vermelha","Carne Branca","Frutos do Mar","Salada"], ocasiao:["Praia","Churrasco","Com amigos"], sizes:["Lata 269ML","Long Neck 355ML"]}, 9.99, 7.99),
+
+      P("Eisenbahn Weizenbier","Eisenbahn",{types:["Trigo"], harmoniza:["Carne Branca","Frutos do Mar","Salada"], ocasiao:[], sizes:["Long Neck 355ML"]}, 16.90, 13.90),
+      P("Baden Baden Witbier","Baden Baden",{types:["Trigo","Frutada / Especiarias"], harmoniza:["Carne Branca","Frutos do Mar","Salada"], ocasiao:["Praia"], sizes:["Lata 350ML","Garrafa 600ML"]}, 17.90, 14.90),
+      P("Baden Baden Peach","Baden Baden",{types:["Trigo","Frutada / Especiarias"], harmoniza:["Carne Branca","Frutos do Mar","Salada"], ocasiao:["Praia"], sizes:["Lata 350ML","Garrafa 600ML"]}, 17.50, 13.90),
+      P("Baden Baden Golden","Baden Baden",{types:["Trigo","Frutada / Especiarias"], harmoniza:["Carne Branca","Salada"], ocasiao:["Campo"], sizes:["Lata 350ML","Garrafa 600ML"]}, 16.90, 13.90),
+      P("Praya Clássica","Praya",{types:["Trigo","Frutada / Especiarias"], harmoniza:["Carne Branca","Frutos do Mar","Salada"], ocasiao:["Praia","Churrasco"], sizes:["Lata 269ML","Lata 350ML","Long Neck 355ML","Garrafa 600ML"]}, 10.90, 8.90),
+      P("Blue Moon","Blue Moon",{types:["Trigo","Frutada / Especiarias"], harmoniza:["Carne Branca","Frutos do Mar","Salada"], ocasiao:["Praia","Com mozão"], sizes:["Lata 350ML","Long Neck 355ML"]}, 18.90, 15.90),
+
+      P("Eisenbahn Pale Ale","Eisenbahn",{types:["Frutada / Especiarias","Escura"], harmoniza:["Carne Vermelha"], ocasiao:["Campo","Churrasco","Com amigos"], sizes:["Long Neck 355ML"]}, 16.90, 13.90),
+
+      P("Baden Baden IPA","Baden Baden",{types:["Amarga","Escura"], harmoniza:["Carne Vermelha"], ocasiao:["Campo","Churrasco"], sizes:["Lata 350ML","Garrafa 600ML","Lata 473ML"]}, 19.90, 15.90),
+      P("Eisenbahn IPA","Eisenbahn",{types:["Amarga","Escura"], harmoniza:["Carne Vermelha"], ocasiao:["Churrasco"], sizes:[]}, 17.90, 14.90),
+      P("Eisenbahn Session IPA","Eisenbahn",{types:["Amarga","Escura"], harmoniza:["Carne Vermelha"], ocasiao:["Churrasco"], sizes:[]}, 16.90, 13.90),
+      P("Lagunitas IPA","Lagunitas",{types:["Amarga","Escura"], harmoniza:["Carne Vermelha"], ocasiao:["Churrasco"], sizes:[]}, 22.90, 18.90),
+      P("Lagunitas Session IPA","Lagunitas",{types:["Amarga","Escura"], harmoniza:["Carne Vermelha"], ocasiao:["Churrasco"], sizes:[]}, 21.90, 17.90),
+
+      P("Baden Baden Amber Lager","Baden Baden",{types:["Escura"], harmoniza:["Carne Vermelha","Salada"], ocasiao:["Campo","Churrasco"], sizes:["Garrafa 600ML","Lata 473ML"]}, 14.90, 12.90),
+    ];
+
+    function P(name, brand, attrs, oldPrice, price){
+      const id = slug(name);
+      const styleTag = guessTag(name);
+      const img = ph(styleTag);
+      return { id, name, brand, img, types:attrs.types, harmoniza:attrs.harmoniza, ocasiao:attrs.ocasiao, sizes:attrs.sizes, priceOld:oldPrice, price, tags:[styleTag] };
+    }
+    function slug(s){return s.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/(^-|-$)/g,'')}
+    function guessTag(n){
+      const t=n.toLowerCase();
+      if(t.includes('ipa')) return 'IPA';
+      if(t.includes('wit')) return 'Witbier';
+      if(t.includes('weizen')) return 'Weizenbier';
+      if(t.includes('pale ale')) return 'Pale Ale';
+      if(t.includes('pilsen')) return 'Pilsen';
+      if(t.includes('amber')) return 'Amber Lager';
+      if(t.includes('golden')) return 'Golden';
+      if(t.includes('peach')) return 'Peach';
+      if(t.includes('cristal')) return 'Cristal';
+      return 'Cerveja';
+    }
+
+    const state = { tipo:null, harmoniza:null, ocasiao:null, tamanho:null };
+    const panels = [...document.querySelectorAll('.panel')];
+    const stepsEl = document.getElementById('steps');
+
+    fillOptions('step1', TYPE_OPTIONS.map(v=>({value:v,label:v})));
+    updateDynamicOptions();
+    renderSteps(1);
+
+    function renderSteps(active){
+      const labels = ['tipo','harmonização','ocasião','tamanho','resultado'];
+      stepsEl.innerHTML = labels.map((label,i)=>`<div class="step ${i+1===active?'is-active':''} ${i+1<active?'done':''}">${i+1}. ${label}</div>`).join('');
+      const total = 4;
+      const pct = Math.max(1, Math.min(active, total)) / total * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('progressLabel').textContent = `passo ${Math.min(active,total)} de ${total}`;
+    }
+
+    function getVal(name){ const el=document.querySelector(`[name="${name}"]:checked`); return el?el.value:null; }
+    function go(step){
+      panels.forEach(p=>p.hidden = p.dataset.step && p.dataset.step != step);
+      document.getElementById('result').hidden = step !== 'result';
+      renderSteps(step==='result'?5:Number(step));
+      window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    // Voltar entre passos
+    document.querySelectorAll('[data-prev]').forEach(btn=>btn.addEventListener('click',()=>{
+      const step = Number(btn.closest('.panel').dataset.step);
+      go(step-1);
+    }));
+
+    // Ver resultado
+    document.getElementById('btn-ver-result')?.addEventListener('click',()=>{
+      state.tamanho = getVal('tamanho') || state.tamanho;
+      if(!state.tamanho){shake(document.querySelector('[data-step="4"]')); return;}
+      showResults();
+    });
+
+    // Resultado: voltar aos filtros/refazer
+    document.getElementById('back-to-filters')?.addEventListener('click',()=>{
+      go(4);
+    });
+    document.getElementById('restart')?.addEventListener('click',()=>location.reload());
+
+    // Auto avanço ao clicar no card
+    document.querySelectorAll('#step1,#step2,#step3,#step4').forEach(group=>{
+      group.addEventListener('click',e=>{
+        const label=e.target.closest('label.option'); if(!label) return;
+        const input=label.querySelector('input'); if(!input) return;
+        input.checked=true;
+        const host=group.closest('.panel'); const step=Number(host.dataset.step);
+        if(step===1){ state.tipo=getVal('tipo'); updateDynamicOptions(); go(2); }
+        if(step===2){ state.harmoniza=getVal('harmoniza'); updateDynamicOptions(); go(3); }
+        if(step===3){ state.ocasiao=getVal('ocasiao'); updateDynamicOptions(); go(4); }
+      });
+    });
+
+    function currentFilter(includeStep=null){
+      return products.filter(p =>
+        (!state.tipo || includeStep==='tipo' || p.types.includes(state.tipo)) &&
+        (!state.harmoniza || includeStep==='harmoniza' || state.harmoniza==='Todos' || p.harmoniza.includes(state.harmoniza)) &&
+        (!state.ocasiao || includeStep==='ocasiao' || state.ocasiao==='Todos' || p.ocasiao.includes(state.ocasiao)) &&
+        (!state.tamanho || includeStep==='tamanho' || p.sizes.includes(state.tamanho))
+      );
+    }
+    function updateDynamicOptions(){
+      const afterTipo=currentFilter('harmoniza');
+      const availableH=new Set(afterTipo.flatMap(p=>p.harmoniza));
+      const step2Options = ["Todos",...HARM_OPTIONS.filter(o=>o!=="Todos" && availableH.has(o))].map(v=>({value:v,label:v}));
+      fillOptions('step2', step2Options,'harmoniza');
+
+      const afterH=currentFilter('ocasiao');
+      const availableO=new Set(afterH.flatMap(p=>p.ocasiao));
+      const step3Options = ["Todos",...OCASION_OPTIONS.filter(o=>o!=="Todos" && availableO.has(o))].map(v=>({value:v,label:v}));
+      fillOptions('step3', step3Options,'ocasiao');
+
+      const afterO=currentFilter('tamanho');
+      const availableS=new Set(afterO.flatMap(p=>p.sizes));
+      const step4Options = Array.from(availableS).map(v=>({value:v,label:v}));
+      fillOptions('step4', step4Options,'tamanho');
+    }
+    function fillOptions(containerId, items, name=null){
+      const cont=document.getElementById(containerId);
+      if(!items.length){ cont.innerHTML='<div class="muted">Sem opções disponíveis para as escolhas anteriores.</div>'; return; }
+      cont.innerHTML = items.map(it=>`
+        <label class="option">
+          <input type="radio" ${name?`name="${name}"`:containerId==='step1'?`name="tipo"`:''} value="${it.value}"/>
+          <div class="name">${it.label}</div>
+        </label>
+      `).join('');
+    }
+
+    function matchScore(p){
+      let s=0;
+      if(state.tipo && p.types.includes(state.tipo)) s+=3; else if(state.tipo) s-=1;
+      if(state.harmoniza && (state.harmoniza==='Todos' || p.harmoniza.includes(state.harmoniza))) s+=2;
+      if(state.ocasiao && (state.ocasiao==='Todos' || p.ocasiao.includes(state.ocasiao))) s+=2;
+      if(state.tamanho && p.sizes.includes(state.tamanho)) s+=3;
+      return s;
+    }
+    function showResults(){
+      const ranked = products.map(p=>({p,score:matchScore(p)}))
+        .filter(x=>x.score>0)
+        .sort((a,b)=> b.score-a.score || a.p.price-b.p.price)
+        .map(x=>x.p);
+      const [best,...rest]=ranked.slice(0,6);
+      document.getElementById('recommendation').innerHTML = best? productCard(best,true) : '<div class="muted" style="padding:12px">Nenhum produto encontrado para a seleção.</div>';
+      document.getElementById('more').innerHTML = rest.slice(0,3).map(p=>productCard(p,false)).join('');
+      go('result');
+    }
+
+    function formatBRL(v){ return v.toLocaleString('pt-BR',{style:'currency', currency:'BRL'}) }
+    function productCard(p, highlight=false){
+      return `
+        <article class="product ${highlight? 'highlight':''}">
+          <div class="pic"><img alt="${p.name}" src="${p.img}"></div>
+          <div class="info">
+            <div class="brand">${p.brand}</div>
+            <div class="name">${p.name}</div>
+            <div class="tags">${[...p.tags, ...p.sizes].map(t=>`<span class=tag>${t}</span>`).join('')}</div>
+            <div class="price">
+              ${p.priceOld? `<span class="old">${formatBRL(p.priceOld)}</span>`:''}
+              <span class="now">${formatBRL(p.price)}</span>
+            </div>
+            <div class="cta-area">
+              <button class="btn btn-primary" onclick="handleAdd('${p.id}')">Adicionar</button>
+            </div>
+          </div>
+        </article>`;
+    }
+    function handleAdd(id){
+      const toast=document.getElementById('toast'); toast.classList.add('show'); setTimeout(()=>toast.classList.remove('show'),1500);
+      console.log('Adicionar ao carrinho:', id);
+    }
+    function ph(text='🍺', bg='#eef2ff'){
+      const svg=encodeURIComponent(`<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'>
+        <rect rx='18' ry='18' width='120' height='120' fill='${bg}'/>
+        <text x='50%' y='54%' dominant-baseline='middle' text-anchor='middle' font-family='Open Sans, system-ui' font-size='28' fill='#374151' font-weight='800'>${text}</text>
+      </svg>`);
+      return `data:image/svg+xml;charset=UTF-8,${svg}`;
+    }
+    function shake(el){ el.style.transition='transform .12s'; el.style.transform='translateX(2px)'; setTimeout(()=>el.style.transform='translateX(-2px)',90); setTimeout(()=>el.style.transform='',180); }
+  </script>
+</body>
+</html>

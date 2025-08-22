@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Heineken Craft Club – Landing</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#0c0c0c;
+      --paper:#111214;
+      --muted:#9aa1a9;
+      --text:#f3f4f6;
+      --accent:#e5c06b;
+      --cta:#e5264b;
+      --green:#008969;
+      --border:#20252b;
+      --radius:14px;
+      --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;background:#0b0b0d;color:var(--text);
+      font-family:Inter, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      line-height:1.55;
+    }
+    a{color:inherit;text-decoration:none}
+    .container{max-width:1110px;margin:0 auto;padding:14px}
+
+    /* Top utility bar (simplificado para parecer com a loja) */
+    .util{background:#d10c2f;color:#fff;font-size:12px}
+    .util .container{display:flex;justify-content:space-between;align-items:center;padding:6px 14px}
+
+    /* Hero banner */
+    .hero img{width:100%;height:auto;border-radius:12px;display:block;box-shadow:var(--shadow)}
+
+    /* Grid 3 banners */
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px;margin-top:18px}
+    .tile img{width:100%;height:100%;object-fit:cover;border-radius:12px;display:block;box-shadow:var(--shadow)}
+    .tile.tall{aspect-ratio: 9/13;}
+    .tile.square{aspect-ratio: 1/1;}
+    .tile.portrait{aspect-ratio: 3/5;}
+
+    /* Lista de produtos – versão visual semelhante */
+    .shelf{background:var(--paper);border:1px solid var(--border);border-radius:12px;margin:24px 0;padding:14px;box-shadow:var(--shadow)}
+    .shelf h3{margin:0 0 12px;font-weight:800;font-size:18px}
+    .cards{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+    @media (max-width:1000px){.cards{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:640px){.cards{grid-template-columns:repeat(2,1fr)}}
+    .card{
+      background:#0f1113;border:1px solid var(--border);border-radius:12px;overflow:hidden;
+      display:flex;flex-direction:column;box-shadow:var(--shadow)
+    }
+    .card .pic{background:#15181c;display:grid;place-items:center;height:140px}
+    .card .pic span{
+      width:84px;height:84px;border-radius:8px;background:linear-gradient(180deg,#1c2126,#0f1113);
+      border:1px solid #2a3138;display:grid;place-items:center;font-weight:800;color:#9fb5ff;font-size:12px;
+    }
+    .card .body{padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+    .brand{color:var(--muted);font-size:11px;letter-spacing:.3px;text-transform:uppercase}
+    .name{font-weight:700;font-size:14px;min-height:36px}
+    .price{display:flex;gap:8px;align-items:baseline}
+    .old{color:#8a9097;text-decoration:line-through;font-size:12px}
+    .now{font-weight:800;font-size:16px;color:#fff}
+    .cta{margin-top:6px}
+    .btn{appearance:none;border:0;border-radius:10px;padding:10px 12px;font-weight:800;cursor:pointer}
+    .btn-green{background:var(--green);color:#fff}
+    .btn-outline{background:transparent;border:1px solid var(--border);color:#e5e7eb}
+
+    /* Faixas */
+    .strip{margin:24px 0}
+    .strip img{width:100%;height:auto;border-radius:12px;box-shadow:var(--shadow)}
+
+    /* Título seção */
+    .sec-title{margin:26px 0 8px;font-weight:800;font-size:22px}
+    .muted{color:var(--muted)}
+
+    /* 2 col banners */
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:22px 0}
+    @media (max-width:860px){.grid-2{grid-template-columns:1fr}}
+    .grid-2 img{width:100%;height:auto;border-radius:12px;box-shadow:var(--shadow)}
+
+    /* Depoimentos */
+    .reviews{display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;margin:18px 0}
+    @media (max-width:960px){.reviews{grid-template-columns:1fr 1fr}}
+    @media (max-width:640px){.reviews{grid-template-columns:1fr}}
+    .review{
+      background:#0f1113;border:1px solid var(--border);border-radius:12px;padding:14px;box-shadow:var(--shadow)
+    }
+    .stars{color:#ffd166;font-size:14px;letter-spacing:1px}
+    .review .who{margin-top:8px;color:var(--muted);font-size:12px}
+
+    /* Rodapé vermelho */
+    .cta-foot{background:#e5264b;margin-top:24px;color:#fff}
+    .cta-foot .container{display:grid;grid-template-columns:1fr 280px 140px;gap:10px;align-items:center;padding:18px}
+    @media (max-width:860px){.cta-foot .container{grid-template-columns:1fr}}
+    .cta-foot input{width:100%;padding:12px;border-radius:10px;border:0}
+    .cta-foot button{background:#111;color:#fff;border:0;border-radius:10px;padding:12px;font-weight:800}
+
+    /* Iframe do seletor */
+    .selector-wrap{margin:26px 0;background:#0f1113;border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+    iframe.selector{width:100%;height:860px;border:0;background:#fff}
+
+    /* Fix banner proportions */
+    .w-hero{aspect-ratio:1110/174}
+    .w-large{aspect-ratio:1110/600}
+    .w-wide{aspect-ratio:1110/250}
+  </style>
+</head>
+<body>
+
+  <div class="util">
+    <div class="container">
+      <div>Imigrantes Bebidas • Craft Club</div>
+      <div>Atendimento: 11 2388-3500</div>
+    </div>
+  </div>
+
+  <main class="container">
+    <!-- HERO -->
+    <section class="hero">
+      <img class="w-hero" src="banner-1110x174.png" alt="Heineken Craft Club">
+    </section>
+
+    <!-- 3 BANNERS -->
+    <section class="grid-3">
+      <a class="tile square" href="#"><img src="banner-754x753.png" alt="Blue Moon perfeita com laranja"></a>
+      <a class="tile square" href="#"><img src="imagem_blue_moon.png" alt="Pessoa brindando Blue Moon"></a>
+      <a class="tile portrait" href="#"><img src="banner-270x499_Lagunitas.png" alt="Lagunitas – A IPA da Califórnia"></a>
+    </section>
+
+    <!-- PRATELEIRA -->
+    <section class="shelf">
+      <h3>Ofertas Craft</h3>
+      <div class="cards">
+        <div class="card">
+          <div class="pic"><span>BLUE MOON</span></div>
+          <div class="body">
+            <div class="brand">Blue Moon</div>
+            <div class="name">Belgian White Lata 350ml</div>
+            <div class="price"><span class="old">R$ 8,59</span><span class="now">R$ 6,99</span></div>
+            <div class="cta"><button class="btn btn-green">Adicionar</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="pic"><span>BADEN IPA</span></div>
+          <div class="body">
+            <div class="brand">Baden Baden</div>
+            <div class="name">IPA Lata 350ml</div>
+            <div class="price"><span class="old">R$ 6,69</span><span class="now">R$ 6,19</span></div>
+            <div class="cta"><button class="btn btn-green">Adicionar</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="pic"><span>LAGUNITAS</span></div>
+          <div class="body">
+            <div class="brand">Lagunitas</div>
+            <div class="name">IPA Lata 350ml</div>
+            <div class="price"><span class="old">R$ 8,59</span><span class="now">R$ 7,99</span></div>
+            <div class="cta"><button class="btn btn-green">Adicionar</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="pic"><span>BADEN PEACH</span></div>
+          <div class="body">
+            <div class="brand">Baden Baden</div>
+            <div class="name">Peach Lata 350ml</div>
+            <div class="price"><span class="old">R$ 6,69</span><span class="now">R$ 6,19</span></div>
+            <div class="cta"><button class="btn btn-green">Adicionar</button></div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="pic"><span>WITBIER</span></div>
+          <div class="body">
+            <div class="brand">Baden Baden</div>
+            <div class="name">Witbier Lata 350ml</div>
+            <div class="price"><span class="old">R$ 6,69</span><span class="now">R$ 6,19</span></div>
+            <div class="cta"><button class="btn btn-green">Adicionar</button></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STRIP -->
+    <section class="strip">
+      <img class="w-wide" src="banner-1110x250.png" alt="O mundo cervejeiro na palma da mão">
+    </section>
+
+    <!-- SELETOR EMBUTIDO -->
+    <h2 class="sec-title">Qual é a sua cerveja?</h2>
+    <p class="muted">Selecione as opções (4 passos). Clique nos cards para avançar.</p>
+    <div class="selector-wrap">
+      <iframe class="selector" src="index.html" title="Seletor de Produtos"></iframe>
+    </div>
+
+    <!-- BANNER GRANDE -->
+    <section class="strip">
+      <img class="w-large" src="banner-1110x600.png" alt="Harmonize momentos especiais com Baden Baden">
+    </section>
+
+    <!-- 2 BANNERS -->
+    <section class="grid-2">
+      <img src="banner-535X313.png" alt="PRAYA – Nascida no Rio, local do Brasil">
+      <img src="craft_imigrantes_banner_535X313_2.png" alt="Cerveja para todos os momentos – Craft Club">
+    </section>
+
+    <!-- Depoimentos -->
+    <h2 class="sec-title">O que os clientes dizem</h2>
+    <div class="reviews">
+      <div class="review">
+        <div class="stars">★★★★★</div>
+        <div>“Muito prático e seguro comprar pelo site da Imigrantes Bebidas, sem dizer da grande...”</div>
+        <div class="who">Sonia W. — Cliente desde 04/12/2021</div>
+      </div>
+      <div class="review">
+        <div class="stars">★★★★★</div>
+        <div>“Como cliente, muito satisfeito.”</div>
+        <div class="who">Jaguarussu D. — Cliente desde 29/03/2014</div>
+      </div>
+      <div class="review">
+        <div class="stars">★★★★★</div>
+        <div>“Vou continuar apoiando vocês como vcs apoiam mim!”</div>
+        <div class="who">Grant G. — Cliente desde 01/11/2014</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Rodapé cadastro -->
+  <footer class="cta-foot">
+    <div class="container">
+      <h3 style="margin:0;font-weight:800">📥 Receba ofertas</h3>
+      <input placeholder="Digite seu e-mail">
+      <button>Cadastar e-mail</button>
+    </div>
+  </footer>
+</body>
+</html>
